@@ -625,6 +625,10 @@ void Nap<T>::range_query(const Slice &key, size_t count,
 
 template <class T> void Nap<T>::nap_shift() {
 
+  static auto sort_func = [](const NapPair &a, const NapPair &b) {
+    return a.first < b.first;
+  };
+
   bindCore(Topology::threadID());
 
   CM = new CountMin(hot_cnt);
@@ -691,7 +695,7 @@ template <class T> void Nap<T>::nap_shift() {
       new_list.push_back({l[k].key, WhereIsData::IN_RAW_INDEX});
     }
     
-    std::random_shuffle(new_list.begin(), new_list.end());
+    std::sort(new_list.begin(), new_list.end(), sort_func);
 
     uint64_t overlapped_cnt = 0;
     for (size_t i = 0, j = 0; i < cur_list.size() && j < new_list.size();) {

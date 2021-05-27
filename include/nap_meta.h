@@ -16,8 +16,10 @@ struct NapMeta {
 	{
 	}
 
-	NapMeta(std::vector<NapPair> &list)
+	NapMeta(std::vector<NapPair> &_list)
 	{
+        auto list = _list;
+		std::random_shuffle(list.begin(), list.end());
 		cn_view = new CNView(list);
 		sp_view = new SPView(list);
 	}
